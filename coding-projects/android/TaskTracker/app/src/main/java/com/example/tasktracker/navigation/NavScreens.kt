@@ -1,7 +1,5 @@
 package com.example.tasktracker.navigation
 
-import androidx.compose.runtime.Composable
-
 sealed class NavScreens(val route:String) {
     companion object {
         private const val LIST_SCREEN_ROUTE = "List"
@@ -11,4 +9,10 @@ sealed class NavScreens(val route:String) {
     object TaskList: NavScreens(LIST_SCREEN_ROUTE)
     object TaskSettings: NavScreens(SETTINGS_SCREEN_ROUTE)
     object TaskDetail: NavScreens(DETAIL_SCREEN_ROUTE)
+}
+/**
+ * Arguments used in routes
+ */
+object TaskArgs{
+    const val TASK_ID_ARG = "taskId"
 }

@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasktracker.R
 import com.example.tasktracker.ui.theme.Green
 
@@ -45,145 +46,160 @@ import com.example.tasktracker.ui.theme.Green
  * Created by Gauri Gadkari on 1/23/24.
  * Screen to display task details and add, edit or delete task
  * Developed compose UI by Liubov Sireneva on 1/29/24
+ * Edit logic created by Jyoshna on 2/09/24
  */
-class TaskDetailScreen {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TaskDetailScreen() {
-        OutlinedCard(
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White,
-            ),
-            border = BorderStroke(dimensionResource(R.dimen.detail_border_thickness), Color.Black),
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.medium_padding))
-                .wrapContentSize()
-                .verticalScroll(rememberScrollState()),
-            shape = RoundedCornerShape(dimensionResource(R.dimen.detail_card_shape))
 
-        ) {
-            val dateInfo =
-                "JAN 29 2024" //these values should be changed, it needs to be get from ViewModel
-            val startTimeInfo = "08:22:10"
-            val endTimeInfo = "09:12:01"
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.medium_padding)),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.outline_delete_24),
-                        contentDescription = stringResource(id = R.string.delete),
-                    )
-                }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_cancel_24),
-                        contentDescription = stringResource(id = R.string.cancel),
-                        tint = Color.Red
-                    )
-                }
-            }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TaskDetailScreen(
+   viewModel: TaskDetailViewModel = hiltViewModel()
+) {
+    OutlinedCard(
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
+        border = BorderStroke(dimensionResource(R.dimen.detail_border_thickness), Color.Black),
+        modifier = Modifier
+            .padding(dimensionResource(R.dimen.medium_padding))
+            .wrapContentSize()
+            .verticalScroll(rememberScrollState()),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.detail_card_shape))
 
-            LabelButtonRow(
-                label = stringResource(id = R.string.date_label).uppercase(),
-                buttonInfo = dateInfo
-            ) {}
-            var textState by remember { mutableStateOf("") }
-
-            TextField(
-                value = textState,
-                onValueChange = { textState = it },
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.medium_padding))
-                    .fillMaxWidth()
-                    .sizeIn(minHeight = dimensionResource(R.dimen.detail_textfield_min_height))
-                    .border(
-                        dimensionResource(R.dimen.detail_border_thickness),
-                        Color.Gray,
-                        RoundedCornerShape(5)
-                    ),
-                label = { Text(text = stringResource(id = R.string.textfield_label)) },
-                maxLines = 20,
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedLabelColor = Color.Gray,
-                    cursorColor = Color.Gray,
-                    focusedLabelColor = Color.Gray,
-                    textColor = Color.Black,
-                    containerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-            )
-
-            LabelButtonRow(
-                label = stringResource(id = R.string.start_time_label).uppercase(),
-                buttonInfo = startTimeInfo
-            ) {}
-            LabelButtonRow(
-                label = stringResource(id = R.string.end_time_label).uppercase(),
-                buttonInfo = endTimeInfo
-            ) {}
-
-            OutlinedButton(
-                onClick = { },
-                colors = ButtonDefaults.textButtonColors(
-                    containerColor = Color.White, contentColor = Green
-                ),
-                border = BorderStroke(dimensionResource(R.dimen.detail_border_thickness), Green),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(
-                        top = dimensionResource(R.dimen.detail_done_button_padding),
-                        bottom = dimensionResource(R.dimen.small_padding)
-                    ),
-                contentPadding = PaddingValues(
-                    horizontal = dimensionResource(R.dimen.detail_done_button_inside_padding),
-                    vertical = dimensionResource(R.dimen.small_padding)
-                )
-            ) {
-                Text(text = stringResource(id = R.string.done).uppercase())
-            }
-        }
-    }
-
-    @Composable
-    fun LabelButtonRow(label: String, buttonInfo: String, onClick: () -> Unit) {
+    ) {
+        var dateState by remember { mutableStateOf("") }
+        var startTimeState by remember { mutableStateOf("") }
+        var endTimeState by remember { mutableStateOf("") }
+        var idState by remember { mutableStateOf(0) }
+        //todo get id from list and remove this value
+        idState = 1
+        val dateInfo =
+            "JAN 29 2024" //these values should be changed, it needs to be get from ViewModel
+        val startTimeInfo = "08:22:10"
+        val endTimeInfo = "09:12:01"
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = dimensionResource(R.dimen.medium_padding),
-                    vertical = dimensionResource(R.dimen.small_padding)
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(dimensionResource(R.dimen.medium_padding)),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text(
-                text = label,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Button(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                shape = RoundedCornerShape(dimensionResource(R.dimen.detail_button_corner_shape)),
-                onClick = onClick,
-                colors = ButtonDefaults.textButtonColors(
-                    containerColor = Green, contentColor = Color.White
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_delete_24),
+                    contentDescription = stringResource(id = R.string.delete),
                 )
-            ) {
-                Text(text = buttonInfo, fontSize = 12.sp)
+            }
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_cancel_24),
+                    contentDescription = stringResource(id = R.string.cancel),
+                    tint = Color.Red
+                )
             }
         }
-    }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun TaskDetailScreenPreview() {
-        TaskDetailScreen()
+        LabelButtonRow(
+            label = stringResource(id = R.string.date_label).uppercase(), buttonInfo = dateInfo
+        ) {
+            dateState = dateInfo
+            viewModel.updateDate(dateState)
+        }
+        var textState by remember { mutableStateOf("") }
+
+        TextField(
+            value = textState,
+            onValueChange = viewModel :: updateTaskName,
+            modifier = Modifier
+                .padding(dimensionResource(R.dimen.medium_padding))
+                .fillMaxWidth()
+                .sizeIn(minHeight = dimensionResource(R.dimen.detail_textfield_min_height))
+                .border(
+                    dimensionResource(R.dimen.detail_border_thickness),
+                    Color.Gray,
+                    RoundedCornerShape(5)
+                ),
+            label = { Text(text = stringResource(id = R.string.textfield_label)) },
+            maxLines = 20,
+            colors = TextFieldDefaults.textFieldColors(
+                unfocusedLabelColor = Color.Gray,
+                cursorColor = Color.Gray,
+                focusedLabelColor = Color.Gray,
+                textColor = Color.Black,
+                containerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+        )
+
+        LabelButtonRow(
+            label = stringResource(id = R.string.start_time_label).uppercase(),
+            buttonInfo = startTimeInfo
+        ) {
+            startTimeState = startTimeInfo
+            viewModel.updateStartTime(startTimeState)
+        }
+        LabelButtonRow(
+            label = stringResource(id = R.string.end_time_label).uppercase(),
+            buttonInfo = endTimeInfo
+        ) {
+            endTimeState = endTimeInfo
+            viewModel.updateEndTime(endTimeState)
+        }
+
+        OutlinedButton(
+            onClick = viewModel::saveTask,
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = Color.White, contentColor = Green
+            ),
+            border = BorderStroke(dimensionResource(R.dimen.detail_border_thickness), Green),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(
+                    top = dimensionResource(R.dimen.detail_done_button_padding),
+                    bottom = dimensionResource(R.dimen.small_padding)
+                ),
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.detail_done_button_inside_padding),
+                vertical = dimensionResource(R.dimen.small_padding)
+            )
+        ) {
+            Text(text = stringResource(id = R.string.done).uppercase())
+        }
     }
+}
+
+@Composable
+fun LabelButtonRow(label: String, buttonInfo: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(R.dimen.medium_padding),
+                vertical = dimensionResource(R.dimen.small_padding)
+            ), horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.align(Alignment.CenterVertically),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Button(
+            modifier = Modifier.align(Alignment.CenterVertically),
+            shape = RoundedCornerShape(dimensionResource(R.dimen.detail_button_corner_shape)),
+            onClick = onClick,
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = Green, contentColor = Color.White
+            )
+        ) {
+            Text(text = buttonInfo, fontSize = 12.sp)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TaskDetailScreenPreview() {
+    TaskDetailScreen()
 }
